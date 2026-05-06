@@ -63,3 +63,9 @@ php tests/test_policy.php
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-tidal-sec-secret-detail.ps1
 
 php tests/test_domain_review.php
+
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-tidal-sec-secret-properties.ps1
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-tidal-sec-secret-golden.ps1
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
