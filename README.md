@@ -1,68 +1,40 @@
 # tidal-sec-secret-core
 
-`tidal-sec-secret-core` is a PHP project for Security tooling. It turns implement a PHP security tooling project for secret constraint solving, using bounded scenario files and conflict explanations into a small local model with readable fixtures and a direct verification command.
-
-## Reading Tidal Sec Secret Core
-
-Start with the README, then open `metadata/project.json` to check the constants behind the examples. After that, `fixtures/cases.csv` shows the compact path and `examples/extended_cases.csv` gives a wider look at the same rule.
-
-## Design Sketch
-
-The design is intentionally direct: parse or construct a signal, score it, classify it, and verify the expected branch. This makes the repository useful for studying security tooling behavior without needing a service or database unless the language project itself is SQL. The PHP implementation uses strict types and a small namespaced policy class.
+`tidal-sec-secret-core` keeps a focused PHP implementation around security tooling. The project goal is to implement a PHP security tooling project for secret constraint solving, using bounded scenario files and conflict explanations.
 
 ## Purpose
 
-The repository exists to keep a technical idea small enough to reason about. The implementation avoids external dependencies where possible, then uses fixtures to make changes easy to review.
+I want this repository to be useful as a quick reading exercise: fixtures first, implementation second, verifier last.
 
-## What It Does
+## Tidal Sec Secret Core Review Notes
 
-- Uses fixture data to keep policy checks changes visible in code review.
-- Includes extended examples for replay guards, including `surge` and `degraded`.
-- Documents claim validation tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
+For a quick review, compare `policy width` with `claim drift` before reading the middle cases.
 
-## Fixture Notes
+## What Is Covered
 
-`recovery` is the first example I would inspect because it lands on the `accept` path with a score of 219. The broader file also keeps `degraded` at -36 and `surge` at 241, which gives the model a useful low-to-high spread.
+- `fixtures/domain_review.csv` adds cases for trust boundary and claim drift.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/tidal-sec-secret-walkthrough.md` walks through the case spread.
+- The PHP code includes a review path for `policy width` and `claim drift`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Files Worth Reading
+## Implementation Notes
 
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
+The implementation keeps the scoring rule plain: reward signal and confidence, preserve slack, penalize drag, then classify the result into a review lane.
 
-## Setup
+The added PHP path is deliberately direct, with fixtures doing most of the explaining.
 
-Use a normal shell with PHP available on `PATH`. The verifier is written as a PowerShell script because the portfolio was assembled on Windows.
-
-## Usage
+## Command
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Audit Path
 
-## Verification
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
-
-The audit command checks repository structure and README constraints before it delegates to the verifier.
+The same command runs the local verification path. The highest-scoring domain case is `recovery` at 201, which lands in `ship`. The most cautious case is `stress` at 135, which lands in `watch`.
 
 ## Limits
 
-This code is local-first. It makes no claim about deployed usage and avoids credentials, hosted state, and environment-specific setup.
-
-## Next Directions
-
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add one more security tooling fixture that focuses on a malformed or borderline input.
+The repository is intentionally scoped to local checks. I would expand it by adding adversarial fixtures before adding features.

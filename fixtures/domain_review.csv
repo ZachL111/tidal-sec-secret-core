@@ -1,0 +1,6 @@
+name,focus,signal,slack,drag,confidence,score,lane
+baseline,trust boundary,49,39,15,89,181,ship
+stress,claim drift,49,32,21,68,135,watch
+edge,replay exposure,57,40,13,75,190,ship
+recovery,policy width,81,32,15,52,201,ship
+stale,trust boundary,91,33,32,59,178,ship
